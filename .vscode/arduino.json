@@ -1,5 +1,6 @@
 {
     "board": "arduino:avr:uno",
     "port": "COM4",
-    "programmer": "arduino:avrisp"
+    "programmer": "arduino:avrisp",
+    "sketch": "src\\mat_sensors.ino"
 }
