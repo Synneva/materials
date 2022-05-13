@@ -5,12 +5,12 @@
 
 // 2x hx711 chips - 4 objects? (one per channel?)
     // 1A = lateral strain
-    // 1B = extension
+    // 1B = extensometer
     // 2A = axial strain
     // 2B = loadcell
         // chip 1 on pin 2, chip 2 on pin 3
 // lvdt analog in on A0
-// ls7366 - encoder on SPI (pins 10-13)     24MHz
+// ls7366 - encoder on SPI (pins 10-13)     20MHz (for now)
 
 const int SCALE1_DOUT_PIN = 2;
 const int SCALE2_DOUT_PIN = 3;
@@ -29,15 +29,17 @@ long scale2_reading = 0;
 
 void setup() {
     Serial.begin(9600);
-    //lvdt_setup();
-    encoder_setup();
-
+    lvdt_setup();
+    //encoder_setup();
+    //scale_setup();
 
 }
 
 void loop() {
     lvdt_read();
-    encoder_read();
+    //encoder_read();
+    //scale_read('A');
+    //scale_read('B');
 }
 
 void scale_setup() {
@@ -47,6 +49,8 @@ void scale_setup() {
     scale2B.begin(SCALE2_DOUT_PIN, SCALE_SCK_PIN, 32);
 }
 
+
+// not tested yet
 void scale_read(char channel) { // channel A for strain, B for extensiometer + load
     switch(channel) {
         case 'A':
@@ -92,15 +96,14 @@ void scale_read(char channel) { // channel A for strain, B for extensiometer + l
                 Serial.println("Scale 2 not found");
 
             break;
-            
+
         default:
             Serial.println("Select channel A or B");
     }
 }
 
-// not needed until circuit is tuned for full analog swing (currently from <0 to ~3.7V)
 void lvdt_setup(){
-    //analogReference(EXTERNAL);
+    analogReference(EXTERNAL);
 }
 
 void lvdt_read(){
@@ -126,7 +129,7 @@ void encoder_read() {
   //Serial.print(" Status: ");
   //print_binary(encoder.read_status_register());
   Serial.print("\n");
-  delay(500);
+  delay(200);
 }
 
 //Function to print out one byte in a readable, left-padded binary format
